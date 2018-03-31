@@ -2,6 +2,11 @@ const express = require('express')
 const app = express()
 const fs = require("fs")
 
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 app.get('/', function (req, res) {
   res.send('Hello World!')
 });
@@ -10,7 +15,31 @@ app.get('/', function (req, res) {
 app.post('/', function(req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var authValue = localTokenAuth(tokenReceived);
-  console.log(authValue);
+  var retData ;
+  var retCode ;
+  if (!authValue) {
+    retCode = 403;
+    retData = {
+      "code":retCode,
+      "message":"Votre token n'est pas valide ou est mal renseigné"
+    };
+  } else {
+    var idReceived = req.body.id;
+    if (idReceived === undefined || idReceived === "undefined" || idReceived === null) {
+      retCode = 400;
+      retData = {
+        "code":retCode,
+        "message":"Un ou plusieurs paramètres sont manquants"
+      };
+    } else {
+      retCode = 200;
+      retData = {
+        "code":retCode,
+        "message":"OK",
+      };
+    }
+  }
+  res.status(retCode).send(retData);
 })
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
