@@ -1,0 +1,28 @@
+{
+  "name": "adneom-ra-api-subject",
+  "version": "1.0.0",
+  "description": "API REST JSON pour sujet test technique php symfony ADNEOM RA",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quentinkb/ADNEOM-RA-API-SUBJECT.git"
+  },
+  "keywords": [
+    "API",
+    "REST",
+    "TEST",
+    "PHP"
+  ],
+  "author": "Quentin BERNET",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quentinkb/ADNEOM-RA-API-SUBJECT/issues"
+  },
+  "homepage": "https://github.com/quentinkb/ADNEOM-RA-API-SUBJECT#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
