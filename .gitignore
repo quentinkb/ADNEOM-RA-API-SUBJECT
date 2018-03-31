@@ -58,3 +58,4 @@ typings/
 .env
 
 parameters.json
+users.json
