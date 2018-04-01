@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/', function(req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
-  var authValue = localTokenAuth(tokenReceived, localConfig);
+  var authValue = localTokenAuth(tokenReceived, localConfig.XAtuhToken);
   var retData ;
   var retCode ;
   if (!authValue) {
@@ -71,16 +71,41 @@ app.post('/', function(req, res) {
     }
   }
   res.status(retCode).send(retData);
-})
+});
+
+app.get('/festival/list', function (req, res) {
+  var tokenReceived = req.get("X-Auth-Token");
+  var localConfig = readJsonFileSync('parameters.json');
+  var authValue = localTokenAuth(tokenReceived, localConfig.resources.api.XAuthToken);
+  var retCode;
+  var retData;
+  console.log(authValue);
+  console.log(tokenReceived);
+  if (!authValue) {
+    retCode = 403;
+    retData = {
+      "code":retCode,
+      "message":"Votre token n'est pas valide ou est mal renseigné"
+    };
+  } else {
+    retCode = 200;
+    retData = {
+      "code":retCode,
+      "message":"Success"
+    };
+  }
+  res.status(retCode).send(retData);
+
+});
 app.listen(3000, function () {
   console.log('API RA API SUBJECT listening on port 3000!')
 });
 
-function localTokenAuth(pToken, pConfig) {
+function localTokenAuth(pToken, lToken) {
   if (pToken === undefined || pToken === 'undefined' || pToken === null) {
     return false;
   } else {
-    var localAuthToken = pConfig.XAuthToken;
+    var localAuthToken = lToken;
     return localAuthToken === pToken;
   }
 }
