@@ -1,20 +1,16 @@
 const express = require('express')
 const app = express()
 const fs = require("fs")
-
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-app.get('/', function (req, res) {
-  res.send('Hello World!')
-});
-
 
 app.post('/', function(req, res) {
   var tokenReceived = req.get("X-Auth-Token");
-  var authValue = localTokenAuth(tokenReceived);
+  var localConfig = readJsonFileSync('parameters.json');
+  var authValue = localTokenAuth(tokenReceived, localConfig);
   var retData ;
   var retCode ;
   if (!authValue) {
@@ -60,13 +56,13 @@ app.post('/', function(req, res) {
             "message":"Bravo, voici les informations nécessaires pour la suite du test.",
             "user":currentUser,
             "subject": {
-              "url":"https://www.google.fr"
+              "url":localConfig.resources.subject.url
             },
             "resources": {
               "api": {
-                "url":"https://www.google.fr",
-                "X-Auth-Token":"toto",
-                "doc":"https://www.google.fr"
+                "url":localConfig.resources.api.url,
+                "X-Auth-Token":localConfig.resources.api.XAuthToken,
+                "doc":localConfig.resources.api.doc
               }
             }
           };
@@ -77,14 +73,14 @@ app.post('/', function(req, res) {
   res.status(retCode).send(retData);
 })
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+  console.log('API RA API SUBJECT listening on port 3000!')
 });
 
-function localTokenAuth(pToken) {
+function localTokenAuth(pToken, pConfig) {
   if (pToken === undefined || pToken === 'undefined' || pToken === null) {
     return false;
   } else {
-    var localAuthToken = readJsonFileSync('parameters.json')["X-Auth-Token"];
+    var localAuthToken = pConfig.XAuthToken;
     return localAuthToken === pToken;
   }
 }
