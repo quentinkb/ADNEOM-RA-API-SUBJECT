@@ -79,8 +79,6 @@ app.get('/festival/list', function (req, res) {
   var authValue = localTokenAuth(tokenReceived, localConfig.resources.api.XAuthToken);
   var retCode;
   var retData;
-  console.log(authValue);
-  console.log(tokenReceived);
   if (!authValue) {
     retCode = 403;
     retData = {
@@ -91,7 +89,8 @@ app.get('/festival/list', function (req, res) {
     retCode = 200;
     retData = {
       "code":retCode,
-      "message":"Success"
+      "message":"Success",
+      "resources":readJsonFileSync('festivals.json')
     };
   }
   res.status(retCode).send(retData);
