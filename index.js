@@ -16,7 +16,7 @@ app.post('/', function(req, res) {
   console.log(localConfig);
   console.log(tokenReceived);
 
-  
+
   var authValue = localTokenAuth(tokenReceived, localConfig.XAtuhToken);
   var retData ;
   var retCode ;
@@ -108,6 +108,9 @@ app.listen(PORT, function () {
 });
 
 function localTokenAuth(pToken, lToken) {
+  console.log("*" + pToken);
+  console.log("*" + lToken);
+  
   if (pToken === undefined || pToken === 'undefined' || pToken === null) {
     return false;
   } else {
