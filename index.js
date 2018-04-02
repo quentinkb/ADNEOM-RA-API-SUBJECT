@@ -73,7 +73,7 @@ app.post('/', function(req, res) {
   res.status(retCode).send(retData);
 });
 
-app.get('/festival/list', function (req, res) {
+app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
   var authValue = localTokenAuth(tokenReceived, localConfig.resources.api.XAuthToken);
@@ -90,7 +90,7 @@ app.get('/festival/list', function (req, res) {
     retData = {
       "code":retCode,
       "message":"Success",
-      "resources":readJsonFileSync('festivals.json')
+      "resources":readJsonFileSync('blackmirror.json')
     };
   }
   res.status(retCode).send(retData);
@@ -110,7 +110,6 @@ function localTokenAuth(pToken, lToken) {
 }
 
 function readJsonFileSync(filepath, encoding){
-
     if (typeof (encoding) == 'undefined'){
         encoding = 'utf8';
     }
