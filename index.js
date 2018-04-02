@@ -12,12 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/', function(req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
-
-  console.log(localConfig);
-  console.log(tokenReceived);
-
-
-  var authValue = localTokenAuth(tokenReceived, localConfig.XAtuhToken);
+  var authValue = localTokenAuth(tokenReceived, localConfig.XAuthToken);
   var retData ;
   var retCode ;
   if (!authValue) {
@@ -108,9 +103,6 @@ app.listen(PORT, function () {
 });
 
 function localTokenAuth(pToken, lToken) {
-  console.log("*" + pToken);
-  console.log("*" + lToken);
-  
   if (pToken === undefined || pToken === 'undefined' || pToken === null) {
     return false;
   } else {
