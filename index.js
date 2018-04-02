@@ -12,6 +12,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.post('/', function(req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
+
+  console.log(localConfig);
+  console.log(tokenReceived);
+
+  
   var authValue = localTokenAuth(tokenReceived, localConfig.XAtuhToken);
   var retData ;
   var retCode ;
@@ -78,8 +83,6 @@ app.post('/', function(req, res) {
 app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
-  console.log(localConfig);
-  console.log(tokenReceived);
   var authValue = localTokenAuth(tokenReceived, localConfig.resources.api.XAuthToken);
   var retCode;
   var retData;
