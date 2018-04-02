@@ -97,8 +97,6 @@ app.listen(PORT, function () {
 });
 
 function localTokenAuth(pToken, lToken) {
-  console.log("*" + pToken);
-  console.log("*" + lToken);
   if (pToken === undefined || pToken === 'undefined' || pToken === null) {
     return false;
   } else {
