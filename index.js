@@ -72,8 +72,7 @@ app.post('/', function(req, res) {
 app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
-  console.log(localConfig.resources.api.headers[0].value);
-  var authValue = true;//localTokenAuth(tokenReceived, localConfig.resources.api..headers[0].value);
+  var authValue = localTokenAuth(tokenReceived, localConfig.resources.api..headers[0].value);
   var retCode;
   var retData;
   if (!authValue) {
@@ -98,6 +97,8 @@ app.listen(PORT, function () {
 });
 
 function localTokenAuth(pToken, lToken) {
+  console.log("*" + pToken);
+  console.log("*" + lToken);
   if (pToken === undefined || pToken === 'undefined' || pToken === null) {
     return false;
   } else {
