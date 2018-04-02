@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const fs = require("fs")
 const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 5000
+
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -96,8 +98,8 @@ app.get('/blackmirror', function (req, res) {
   res.status(retCode).send(retData);
 
 });
-app.listen(3000, function () {
-  console.log('API RA API SUBJECT listening on port 3000!')
+app.listen(PORT, function () {
+  console.log('API RA API SUBJECT listening on port ' + PORT)
 });
 
 function localTokenAuth(pToken, lToken) {
