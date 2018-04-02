@@ -1,13 +1,20 @@
 {
-  "XAuthToken": "toto",
+  "XAuthToken": "TokenAPIadneom2018PhPSym",
   "resources": {
     "api" : {
-      "url":"https://www.google.fr",
-      "XAuthToken":"toto",
-      "doc":"https://www.google.fr"
+      "url":"http://adneomapisubject.herokuapp.com",
+      "path":"/blackmirror",
+      "headers": [
+        {
+          "key":"X-Auth-Token",
+          "value":"toto"
+        }
+      ],
+      "method":"GET"
+
     },
     "subject": {
-      "url":"https://www.google.fr"
+      "url":"https://quentinkb.github.io"
     }
   }
 }
