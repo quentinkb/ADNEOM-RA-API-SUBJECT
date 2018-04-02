@@ -60,13 +60,7 @@ app.post('/', function(req, res) {
             "subject": {
               "url":localConfig.resources.subject.url
             },
-            "resources": {
-              "api": {
-                "url":localConfig.resources.api.url,
-                "X-Auth-Token":localConfig.resources.api.XAuthToken,
-                "doc":localConfig.resources.api.doc
-              }
-            }
+            "resources": localConfig.resources
           };
         }
       }
