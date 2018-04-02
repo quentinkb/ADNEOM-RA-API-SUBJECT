@@ -1,0 +1,13 @@
+{
+  "XAuthToken": "toto",
+  "resources": {
+    "api" : {
+      "url":"https://www.google.fr",
+      "XAuthToken":"toto",
+      "doc":"https://www.google.fr"
+    },
+    "subject": {
+      "url":"https://www.google.fr"
+    }
+  }
+}
