@@ -5,6 +5,12 @@
       "lastName":"Bernet",
       "id":0,
       "gitHubLink":"https://www.google.fr"
+    },
+    {
+      "firstName":"Camille",
+      "lastName":"Castillo",
+      "id":1,
+      "gitHubLink":"https://github.com/quentinkb/ADNEOM-TEST-CAMILLE"
     }
   ]
 }
