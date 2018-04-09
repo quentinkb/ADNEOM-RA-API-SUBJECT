@@ -57,9 +57,6 @@ app.post('/', function(req, res) {
             "code":retCode,
             "message":"Bravo, voici les informations nécessaires pour la suite du test.",
             "user":currentUser,
-            "subject": {
-              "url":localConfig.resources.subject.url
-            },
             "resources": localConfig.resources
           };
         }

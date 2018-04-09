@@ -1,6 +1,9 @@
 {
   "XAuthToken": "TokenAPIadneom2018PhPSym",
   "resources": {
+    "subject": {
+      "url":"https://quentinkb.github.io"
+    },
     "api" : {
       "url":"http://adneomapisubject.herokuapp.com",
       "path":"/blackmirror",
@@ -12,9 +15,6 @@
       ],
       "method":"GET"
 
-    },
-    "subject": {
-      "url":"https://quentinkb.github.io"
     }
   }
 }
