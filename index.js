@@ -22,7 +22,7 @@ app.post('/', function(req, res) {
       "message":"Votre token n'est pas valide ou est mal renseigné"
     };
   } else {
-    var idReceived = parseInt(req.body.id);
+    var idReceived = parseInt(req.body.Id);
     if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
       retCode = 400;
       retData = {

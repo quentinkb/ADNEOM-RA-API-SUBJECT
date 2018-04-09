@@ -10,7 +10,7 @@
       "headers": [
         {
           "key":"X-Auth-Token",
-          "value":"toto"
+          "value":"TokenADNTest2018"
         }
       ],
       "method":"GET"
