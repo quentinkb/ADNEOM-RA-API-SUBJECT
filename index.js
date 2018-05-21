@@ -119,10 +119,14 @@ app.get('/getaccess',function (req, res) {
   });
   var rows = null;
   client.query(SQLRequest, (err, res) => {
+    for (let row of res.rows) {
+      console.log(JSON.stringify(row));
+    }
     rows = res.rows;
     client.end();
+    res.status(200).send(JSON.stringify(rows));
   });
-  res.status(200).send(rows);
+
 });
 
 app.get('/blackmirror', function (req, res) {
