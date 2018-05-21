@@ -121,7 +121,8 @@ app.get('/getaccess',function (req, iRes) {
         return iRes.status(200).end();
     }
 
-    iRes.status(200).send(res.rows);
+    iRes.status(200)
+    iRes.jsonp(res.rows);
   });
 });
 
