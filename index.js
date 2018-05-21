@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
  * database : herokuPostGre
  */
 app.post('/', function(req, res) {
-  var date =  new Date();
+  var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
   var SQLRequest = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (";
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
@@ -124,7 +124,7 @@ app.get('/getaccess',function (req, iRes) {
     }
     rows = res.rows;
     client.end();
-    iRes.status(200).send(JSON.stringify(rows));
+    iRes.status(200).send(rows);
   });
 
 });
