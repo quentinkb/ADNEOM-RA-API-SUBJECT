@@ -13,23 +13,6 @@ var ip = require("ip");
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-var addColumn = "ALTER TABLE access ADD ip_address varchar(255)";
-
-var client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
-});
-client.connect().catch(function (result){
-  console.log(result);
-});
-
-client.query(addColumn, (err, res) => {
-  if (err) throw err;
-  console.log(res);
-  client.end();
-});
-
-
 /**
  * récupération du token
  * @table access
@@ -38,7 +21,7 @@ client.query(addColumn, (err, res) => {
  */
 app.post('/', function(req, res) {
   var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-  var SQLRequest = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (";
+  var SQLRequest = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message, ip_address) VALUES (";
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
   var authValue = localTokenAuth(tokenReceived, localConfig.XAuthToken);
@@ -50,7 +33,7 @@ app.post('/', function(req, res) {
       "code":retCode,
       "message":"Votre token n'est pas valide ou est mal renseigné"
     };
-    SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token');";
+    SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token', '"+ ip.address() +"');";
   } else {
     var idReceived = parseInt(req.body.Id);
     if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
@@ -59,7 +42,7 @@ app.post('/', function(req, res) {
         "code":retCode,
         "message":"Un ou plusieurs paramètres sont manquants ou malformés"
       };
-      SQLRequest += "-1, null, null, '"+date+"', 0, '400', 'missing_parameters');";
+      SQLRequest += "-1, null, null, '"+date+"', 0, '400', 'missing_parameters', '"+ ip.address() +"');";
     } else {
       var localUsers = readJsonFileSync('users.json');
       if (localUsers === 'undefined' || localUsers === undefined || localUsers === null || localUsers.users === 'undefined' || localUsers.users === undefined || localUsers.users === null ||(localUsers.users.length == 0)) {
@@ -68,7 +51,7 @@ app.post('/', function(req, res) {
           "code":retCode,
           "message":"[Erreur technique] - la base de données utilisateurs n'est pas joignable"
         }
-        SQLRequest += "-1, null, null, '"+date+"', 0, '500', 'internal_error');";
+        SQLRequest += "-1, null, null, '"+date+"', 0, '500', 'internal_error', '"+ ip.address() +"');";
       } else {
         localUsers = localUsers.users;
         var currentUser = null;
@@ -83,7 +66,7 @@ app.post('/', function(req, res) {
             "code":retCode,
             "message": "[Utilisateurs manquant] - vous n'êtes pas encore réferencé dans nos bases."
           };
-          SQLRequest += "-1, null, null, '"+date+"', 0, '404', 'user_not_found');";
+          SQLRequest += "-1, null, null, '"+date+"', 0, '404', 'user_not_found', '"+ ip.address() +"');";
         } else {
           retCode = 200;
           retData = {
@@ -92,7 +75,7 @@ app.post('/', function(req, res) {
             "user":currentUser,
             "resources": localConfig.resources
           };
-          SQLRequest += currentUser.id+", '" + currentUser.lastName + "', '" + currentUser.firstName + "', '"+date+"', 1, '200', 'success');";
+          SQLRequest += currentUser.id+", '" + currentUser.lastName + "', '" + currentUser.firstName + "', '"+date+"', 1, '200', 'success', '"+ ip.address() +"');";
         }
       }
     }
