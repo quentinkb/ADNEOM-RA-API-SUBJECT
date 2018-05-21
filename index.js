@@ -111,7 +111,7 @@ app.post('/', function(req, res) {
   res.status(retCode).send(retData);
 });
 
-app.get('/getaccess',function (req, res) {
+app.get('/getaccess',function (req, iRes) {
   console.log("get access");
   var SQLRequest = "SELECT * FROM access";
   client.connect().catch(function (result){
@@ -124,7 +124,7 @@ app.get('/getaccess',function (req, res) {
     }
     rows = res.rows;
     client.end();
-    res.status(200).send(JSON.stringify(rows));
+    iRes.status(200).send(JSON.stringify(rows));
   });
 
 });
