@@ -13,9 +13,7 @@ const client = new Client({
 });
 
 
-//var requestString = "CREATE TABLE access (id BIGSERIAL PRIMARY KEY, id_user INT NOT NULL, last_name varchar(255), first_name varchar(255), access_time DATE, success int, code varchar(255), message varchar(255)); ";
 //var requestStringInsert = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (213,'BERNET','Quentin','2017-05-21 11:24:00',1,'200','bien joué');"
-var requestStringSelect = "SELECT * FROM access";
 
 client.connect().catch(function (result){
   console.log(result);
@@ -35,7 +33,16 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 
+
+/**
+ * récupération du token
+ * @table access
+ * chaque appel à la route produit une insertion en base
+ * database : herokuPostGre
+ */
 app.post('/', function(req, res) {
+  var date =  new Date();
+  var SQLRequest = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (";
   var tokenReceived = req.get("X-Auth-Token");
   var localConfig = readJsonFileSync('parameters.json');
   var authValue = localTokenAuth(tokenReceived, localConfig.XAuthToken);
@@ -47,6 +54,8 @@ app.post('/', function(req, res) {
       "code":retCode,
       "message":"Votre token n'est pas valide ou est mal renseigné"
     };
+    SQLRequest += "-1, null, null, "+date+", 0, '403', 'wrong_token');";
+    console.log(SQLRequest);
   } else {
     var idReceived = parseInt(req.body.Id);
     if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
@@ -89,8 +98,32 @@ app.post('/', function(req, res) {
       }
     }
   }
+  /*client.connect().catch(function (result){
+    console.log(result);
+  });
+
+  client.query(requestStringSelect, (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    client.end();
+  });*/
+
   res.status(retCode).send(retData);
 });
+
+app.get('/getaccess',function (req, res)) {
+  console.log("get access");
+  var SQLRequest = "SELECT * FROM access";
+  client.connect().catch(function (result){
+    console.log(result);
+  });
+  var rows = null;
+  client.query(requestStringSelect, (err, res) => {
+    rows = res.rows;
+    client.end();
+  });
+  res.status(200).send(rows);
+}
 
 app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
