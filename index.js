@@ -6,10 +6,28 @@ const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
 
 
+var ip = require("ip");
+
+
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+var addColumn = "ALTER TABLE access ADD ip_address varchar(255)";
+
+var client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
+client.connect().catch(function (result){
+  console.log(result);
+});
+
+client.query(addColumn, (err, res) => {
+  if (err) throw err;
+  console.log(res);
+  client.end();
+});
 
 
 /**
@@ -116,11 +134,9 @@ app.get('/getaccess',function (req, iRes) {
     iRes.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     // Set custom headers for CORS
     iRes.header("Access-Control-Allow-Headers", "Content-type,Accept,X-Custom-Header");
-
     if (req.method === "OPTIONS") {
         return iRes.status(200).end();
     }
-
     iRes.status(200)
     iRes.jsonp(res.rows);
   });
@@ -169,4 +185,9 @@ function readJsonFileSync(filepath, encoding)
     }
     var file = fs.readFileSync(filepath, encoding);
     return JSON.parse(file);
+}
+
+
+function getiPAdress() {
+
 }
