@@ -54,7 +54,7 @@ app.post('/', function(req, res) {
       "code":retCode,
       "message":"Votre token n'est pas valide ou est mal renseigné"
     };
-    SQLRequest += "-1, null, null, "+date+", 0, '403', 'wrong_token');";
+    SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token');";
     console.log(SQLRequest);
   } else {
     var idReceived = parseInt(req.body.Id);
