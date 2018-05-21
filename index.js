@@ -56,6 +56,16 @@ app.post('/', function(req, res) {
     };
     SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token');";
     console.log(SQLRequest);
+    client.connect().catch(function (result){
+      console.log(result);
+    });
+
+    client.query(requestStringSelect, (err, res) => {
+      if (err) throw err;
+      console.log(res);
+      client.end();
+    });
+    
   } else {
     var idReceived = parseInt(req.body.Id);
     if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
@@ -98,15 +108,6 @@ app.post('/', function(req, res) {
       }
     }
   }
-  /*client.connect().catch(function (result){
-    console.log(result);
-  });
-
-  client.query(requestStringSelect, (err, res) => {
-    if (err) throw err;
-    console.log(res);
-    client.end();
-  });*/
 
   res.status(retCode).send(retData);
 });
