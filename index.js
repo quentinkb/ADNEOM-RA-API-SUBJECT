@@ -27,6 +27,9 @@ client.query(requestStringSelect, (err, res) => {
   client.end();
 });*/
 
+client.connect().catch(function (result){
+  console.log(result);
+});
 
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -56,10 +59,6 @@ app.post('/', function(req, res) {
     };
     SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token');";
     console.log(SQLRequest);
-    client.connect().catch(function (result){
-      console.log(result);
-    });
-
     client.query(SQLRequest, (err, res) => {
       if (err) throw err;
       console.log(res);
@@ -115,9 +114,6 @@ app.post('/', function(req, res) {
 app.get('/getaccess',function (req, iRes) {
   console.log("get access");
   var SQLRequest = "SELECT * FROM access";
-  client.connect().catch(function (result){
-    console.log(result);
-  });
   var rows = null;
   client.query(SQLRequest, (err, res) => {
     for (let row of res.rows) {
