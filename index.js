@@ -3,26 +3,7 @@ const app = express()
 const fs = require("fs")
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000
-
-
 const { Client } = require('pg');
-
-
-
-
-//var requestStringInsert = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (213,'BERNET','Quentin','2017-05-21 11:24:00',1,'200','bien joué');"
-
-/*client.connect().catch(function (result){
-  console.log(result);
-});
-
-client.query(requestStringSelect, (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-  client.end();
-});*/
 
 
 
@@ -52,22 +33,6 @@ app.post('/', function(req, res) {
       "message":"Votre token n'est pas valide ou est mal renseigné"
     };
     SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token');";
-    console.log(SQLRequest);
-
-    var client = new Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: true,
-    });
-    client.connect().catch(function (result){
-      console.log(result);
-    });
-
-    client.query(SQLRequest, (err, res) => {
-      if (err) throw err;
-      console.log(res);
-      client.end();
-    });
-
   } else {
     var idReceived = parseInt(req.body.Id);
     if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
@@ -76,6 +41,7 @@ app.post('/', function(req, res) {
         "code":retCode,
         "message":"Un ou plusieurs paramètres sont manquants ou malformés"
       };
+      SQLRequest += "-1, null, null, '"+date+"', 0, '400', 'missing_parameters');";
     } else {
       var localUsers = readJsonFileSync('users.json');
       if (localUsers === 'undefined' || localUsers === undefined || localUsers === null || localUsers.users === 'undefined' || localUsers.users === undefined || localUsers.users === null ||(localUsers.users.length == 0)) {
@@ -84,6 +50,7 @@ app.post('/', function(req, res) {
           "code":retCode,
           "message":"[Erreur technique] - la base de données utilisateurs n'est pas joignable"
         }
+        SQLRequest += "-1, null, null, '"+date+"', 0, '500', 'internal_error');";
       } else {
         localUsers = localUsers.users;
         var currentUser = null;
@@ -98,6 +65,7 @@ app.post('/', function(req, res) {
             "code":retCode,
             "message": "[Utilisateurs manquant] - vous n'êtes pas encore réferencé dans nos bases."
           };
+          SQLRequest += "-1, null, null, '"+date+"', 0, '404', 'user_not_found');";
         } else {
           retCode = 200;
           retData = {
@@ -106,10 +74,27 @@ app.post('/', function(req, res) {
             "user":currentUser,
             "resources": localConfig.resources
           };
+          SQLRequest += currentUser.id+", '" + currentUser.firstName + "', '" + currentUser.lastName + "', '"+date+"', 1, '200', 'success');";
         }
       }
     }
   }
+  
+  console.log(SQLRequest);
+  var client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+  });
+  client.connect().catch(function (result){
+    console.log(result);
+  });
+
+  client.query(SQLRequest, (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    client.end();
+  });
+
   res.status(retCode).send(retData);
 });
 
