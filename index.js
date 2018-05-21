@@ -5,6 +5,18 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000
 
 
+const { Client } = require('pg');
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
+
+client.connect().catch(function (result){
+  console.log(result);
+});
+
+
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -87,8 +99,8 @@ app.get('/blackmirror', function (req, res) {
     };
   }
   res.status(retCode).send(retData);
-
 });
+
 app.listen(PORT, function () {
   console.log('API RA API SUBJECT listening on port ' + PORT)
 });
@@ -102,7 +114,8 @@ function localTokenAuth(pToken, lToken) {
   }
 }
 
-function readJsonFileSync(filepath, encoding){
+function readJsonFileSync(filepath, encoding)
+{
     if (typeof (encoding) == 'undefined'){
         encoding = 'utf8';
     }
