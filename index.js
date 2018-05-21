@@ -111,7 +111,7 @@ app.get('/getaccess',function (req, iRes) {
   });
   client.query(SQLRequest, (err, res) => {
     client.end();
-    res.header('Access-Control-Allow-Origin', '*');
+    iRes.header('Access-Control-Allow-Origin', '*');
     iRes.status(200).send(res.rows);
   });
 });
