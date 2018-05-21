@@ -12,7 +12,7 @@ const client = new Client({
   ssl: true,
 });
 
-var createTableString = "CREATE TABLE utilisateur (id INT PRIMARY KEY NOT NULL, nom VARCHAR(100), prenom VARCHAR(100))";
+var createTableString = "INSERT INTO utilisateur (nom, prenom) VALUES ('BERNET','QUENTIN')";
 
 client.connect().catch(function (result){
   console.log(result);
