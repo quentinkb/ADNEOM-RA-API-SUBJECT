@@ -74,12 +74,12 @@ app.post('/', function(req, res) {
             "user":currentUser,
             "resources": localConfig.resources
           };
-          SQLRequest += currentUser.id+", '" + currentUser.firstName + "', '" + currentUser.lastName + "', '"+date+"', 1, '200', 'success');";
+          SQLRequest += currentUser.id+", '" + currentUser.lastName + "', '" + currentUser.firstName + "', '"+date+"', 1, '200', 'success');";
         }
       }
     }
   }
-  
+
   console.log(SQLRequest);
   var client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -110,14 +110,12 @@ app.get('/getaccess',function (req, iRes) {
     console.log(result);
   });
   client.query(SQLRequest, (err, res) => {
-    for (let row of res.rows) {
-      console.log(JSON.stringify(row));
-    }
-    rows = res.rows;
     client.end();
-    iRes.status(200).send(rows);
+    var headers = {};
+    headers["Access-Control-Allow-Origin"] = "*";
+    res.writeHead(200, headers);
+    iRes.status(200).send(res.rows);
   });
-
 });
 
 app.get('/blackmirror', function (req, res) {
