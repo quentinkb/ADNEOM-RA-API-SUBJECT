@@ -118,7 +118,7 @@ app.get('/getaccess',function (req, res) {
     console.log(result);
   });
   var rows = null;
-  client.query(requestStringSelect, (err, res) => {
+  client.query(SQLRequest, (err, res) => {
     rows = res.rows;
     client.end();
   });
