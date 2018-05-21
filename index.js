@@ -7,10 +7,7 @@ const PORT = process.env.PORT || 5000
 
 const { Client } = require('pg');
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
-});
+
 
 
 //var requestStringInsert = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (213,'BERNET','Quentin','2017-05-21 11:24:00',1,'200','bien joué');"
@@ -27,9 +24,6 @@ client.query(requestStringSelect, (err, res) => {
   client.end();
 });*/
 
-client.connect().catch(function (result){
-  console.log(result);
-});
 
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -59,6 +53,15 @@ app.post('/', function(req, res) {
     };
     SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token');";
     console.log(SQLRequest);
+
+    var client = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+    });
+    client.connect().catch(function (result){
+      console.log(result);
+    });
+
     client.query(SQLRequest, (err, res) => {
       if (err) throw err;
       console.log(res);
@@ -107,7 +110,6 @@ app.post('/', function(req, res) {
       }
     }
   }
-
   res.status(retCode).send(retData);
 });
 
@@ -115,6 +117,13 @@ app.get('/getaccess',function (req, iRes) {
   console.log("get access");
   var SQLRequest = "SELECT * FROM access";
   var rows = null;
+  var client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true,
+  });
+  client.connect().catch(function (result){
+    console.log(result);
+  });
   client.query(SQLRequest, (err, res) => {
     for (let row of res.rows) {
       console.log(JSON.stringify(row));
