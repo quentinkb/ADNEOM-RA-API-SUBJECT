@@ -111,7 +111,16 @@ app.get('/getaccess',function (req, iRes) {
   });
   client.query(SQLRequest, (err, res) => {
     client.end();
-    iRes.header('Access-Control-Allow-Origin', '*');
+    // CORS headers
+    iRes.header("Access-Control-Allow-Origin", "YOUR_URL"); // restrict it to the required domain
+    iRes.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+    // Set custom headers for CORS
+    iRes.header("Access-Control-Allow-Headers", "Content-type,Accept,X-Custom-Header");
+
+    if (req.method === "OPTIONS") {
+        return iRes.status(200).end();
+    }
+
     iRes.status(200).send(res.rows);
   });
 });
