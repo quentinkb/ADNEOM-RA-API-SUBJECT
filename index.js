@@ -13,13 +13,13 @@ const client = new Client({
 });
 
 
-var requestString = "CREATE TABLE access (id BIGSERIAL PRIMARY KEY, id_user INT NOT NULL, last_name varchar(255), first_name varchar(255), access_time DATE, success int, code varchar(255), message varchar(255)); ";
-
+//var requestString = "CREATE TABLE access (id BIGSERIAL PRIMARY KEY, id_user INT NOT NULL, last_name varchar(255), first_name varchar(255), access_time DATE, success int, code varchar(255), message varchar(255)); ";
+var requestStringInsert = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (213,'BERNET','Quentin','2017-05-21 11:24:00',1,'200','bien joué');"
 client.connect().catch(function (result){
   console.log(result);
 });
 
-client.query(requestString, (err, res) => {
+client.query(requestStringInsert, (err, res) => {
   if (err) throw err;
   console.log(res);
   client.end();
