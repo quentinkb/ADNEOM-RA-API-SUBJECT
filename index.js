@@ -12,9 +12,23 @@ const client = new Client({
   ssl: true,
 });
 
+var createTableString = "CREATE TABLE utilisateur (
+    id INT PRIMARY KEY NOT NULL,
+    nom VARCHAR(100),
+    prenom VARCHAR(100),
+)
+";
+
 client.connect().catch(function (result){
   console.log(result);
 });
+
+client.query(createTableString, (err, res) => {
+  if (err) throw err;
+  console.log(res);
+  client.end();
+});
+
 
 
 app.use(bodyParser.json()); // support json encoded bodies
