@@ -19,7 +19,7 @@ client.connect().catch(function (result){
   console.log(result);
 });
 
-client.query(createTableString, (err, res) => {
+client.query(requestString, (err, res) => {
   if (err) throw err;
   console.log(res);
   client.end();
