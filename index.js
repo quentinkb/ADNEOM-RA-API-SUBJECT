@@ -60,12 +60,12 @@ app.post('/', function(req, res) {
       console.log(result);
     });
 
-    client.query(requestStringSelect, (err, res) => {
+    client.query(SQLRequest, (err, res) => {
       if (err) throw err;
       console.log(res);
       client.end();
     });
-    
+
   } else {
     var idReceived = parseInt(req.body.Id);
     if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
