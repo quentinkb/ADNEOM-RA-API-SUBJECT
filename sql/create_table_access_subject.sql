@@ -1,5 +1,5 @@
 CREATE TABLE access (
-  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  id int IDENTITY(1,1) PRIMARY KEY,
   id_user INT NOT NULL,
   last_name varchar(255),
   first_name varchar(255),
@@ -7,4 +7,4 @@ CREATE TABLE access (
   success int,
   code varchar(255),
   message varchar(255)
-); 
+);
