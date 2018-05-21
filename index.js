@@ -15,7 +15,7 @@ const client = new Client({
 
 //var requestStringInsert = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message) VALUES (213,'BERNET','Quentin','2017-05-21 11:24:00',1,'200','bien joué');"
 
-client.connect().catch(function (result){
+/*client.connect().catch(function (result){
   console.log(result);
 });
 
@@ -25,7 +25,7 @@ client.query(requestStringSelect, (err, res) => {
     console.log(JSON.stringify(row));
   }
   client.end();
-});
+});*/
 
 
 
@@ -111,7 +111,7 @@ app.post('/', function(req, res) {
   res.status(retCode).send(retData);
 });
 
-app.get('/getaccess',function (req, res)) {
+app.get('/getaccess',function (req, res) {
   console.log("get access");
   var SQLRequest = "SELECT * FROM access";
   client.connect().catch(function (result){
@@ -123,7 +123,7 @@ app.get('/getaccess',function (req, res)) {
     client.end();
   });
   res.status(200).send(rows);
-}
+});
 
 app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
