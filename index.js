@@ -81,7 +81,7 @@ app.post('/', function(req, res) {
     }
   }
 
-  console.log(SQLRequest);
+  /*console.log(SQLRequest);
   var client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true,
@@ -94,12 +94,12 @@ app.post('/', function(req, res) {
     if (err) throw err;
     console.log(res);
     client.end();
-  });
+  });*/
 
   res.status(retCode).send(retData);
 });
 
-app.get('/getaccess',function (req, iRes) {
+/*app.get('/getaccess',function (req, iRes) {
   console.log("get access");
   var SQLRequest = "SELECT * FROM access";
   var rows = null;
@@ -123,7 +123,7 @@ app.get('/getaccess',function (req, iRes) {
     iRes.status(200)
     iRes.jsonp(res.rows);
   });
-});
+});*/
 
 app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
@@ -168,9 +168,4 @@ function readJsonFileSync(filepath, encoding)
     }
     var file = fs.readFileSync(filepath, encoding);
     return JSON.parse(file);
-}
-
-
-function getiPAdress() {
-
 }

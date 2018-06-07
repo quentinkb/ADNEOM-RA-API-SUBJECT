@@ -32,6 +32,16 @@
       "firstName":"Wassim",
       "lastName":"Bourguiba",
       "id":512
+    },
+    {
+      "firstName":"Romain",
+      "lastName":"Chazottier",
+      "id":3
+    },
+    {
+      "firstName":"Rojbi",
+      "lastName":"Seifeddine",
+      "id":7
     }
   ]
 }
