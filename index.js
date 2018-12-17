@@ -5,10 +5,7 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
 
-
 var ip = require("ip");
-
-
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -81,49 +78,8 @@ app.post('/', function(req, res) {
     }
   }
 
-  /*console.log(SQLRequest);
-  var client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-  });
-  client.connect().catch(function (result){
-    console.log(result);
-  });
-
-  client.query(SQLRequest, (err, res) => {
-    if (err) throw err;
-    console.log(res);
-    client.end();
-  });*/
-
   res.status(retCode).send(retData);
 });
-
-/*app.get('/getaccess',function (req, iRes) {
-  console.log("get access");
-  var SQLRequest = "SELECT * FROM access";
-  var rows = null;
-  var client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true,
-  });
-  client.connect().catch(function (result){
-    console.log(result);
-  });
-  client.query(SQLRequest, (err, res) => {
-    client.end();
-    // CORS headers
-    iRes.header("Access-Control-Allow-Origin", "YOUR_URL"); // restrict it to the required domain
-    iRes.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
-    // Set custom headers for CORS
-    iRes.header("Access-Control-Allow-Headers", "Content-type,Accept,X-Custom-Header");
-    if (req.method === "OPTIONS") {
-        return iRes.status(200).end();
-    }
-    iRes.status(200)
-    iRes.jsonp(res.rows);
-  });
-});*/
 
 app.get('/blackmirror', function (req, res) {
   var tokenReceived = req.get("X-Auth-Token");
