@@ -51,7 +51,7 @@ app.get('/php-test-technique/episodes', (req, res) => {
 
   const localConfig = fileAccess.readJsonFileSync('parameters.json')
   const tokenReceived = req.get("X-Auth-Token")
-  const correctToken = localConfig.resources.api.headers[0].value
+  const correctToken = localConfig.resources.api.accessors[0].headers[0].value
 
   if (!dataChecker.isTokenValid(tokenReceived, correctToken))
     return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
@@ -64,8 +64,8 @@ app.get('/php-test-technique/episodes/:episodeId', (req, res) => {
   const localConfig = fileAccess.readJsonFileSync('parameters.json')
   const episodeIdReceived = req.params.episodeId
   const tokenReceived = req.get("X-Auth-Token")
-  const correctToken = localConfig.resources.api.headers[0].value
-
+  const correctToken = localConfig.resources.api.accessors[0].headers[0].value
+  
   if (!dataChecker.isTokenValid(tokenReceived, correctToken))
     return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
   if (dataChecker.idIsIncorrect(episodeIdReceived)) 
