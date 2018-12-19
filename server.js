@@ -29,21 +29,22 @@ app.get('/php-test-technique/subject', (req, res) => {
     const tokenReceived = req.get("X-Auth-Token")
     const localConfig = fileAccess.readJsonFileSync('parameters.json')
     
-    if (!dataChecker.isTokenValid(tokenReceived, localConfig.XAuthToken))
-    return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
-    
+    if (!dataChecker.isTokenValid(tokenReceived, localConfig.XAuthToken)) {
+        return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
+    }    
     const idReceivedFromRequest = parseInt(req.body.Id)
-    if (dataChecker.idIsIncorrect(idReceivedFromRequest))
-    return apiResponseManager.returnAPI(res, 400, messageManager.getMissignParamsMessage())
+    if (dataChecker.idIsIncorrect(idReceivedFromRequest)) {
+        return apiResponseManager.returnAPI(res, 400, messageManager.getMissignParamsMessage())
+    }
     
     let localUsers = fileAccess.readJsonFileSync('users.json')
-    if (dataChecker.userDataBaseUnreachable(localUsers))
-    return apiResponseManager.returnAPI(res, 500, messageManager.getTechnicalErrorMessage())
-    
+    if (dataChecker.userDataBaseUnreachable(localUsers)) {
+        return apiResponseManager.returnAPI(res, 500, messageManager.getTechnicalErrorMessage())
+    }    
     const currentUser = dataChecker.findUser(localUsers.users, idReceivedFromRequest);
-    if (dataChecker.userNotFound(currentUser))
-    return apiResponseManager.returnAPI(res, 404, messageManager.getMissignUserMessage())
-    
+    if (dataChecker.userNotFound(currentUser)) {
+        return apiResponseManager.returnAPI(res, 404, messageManager.getMissignUserMessage())
+    }    
     return apiResponseManager.returnAPIWithBodyAndUser(res, 200, messageManager.getSuccessMessage() , currentUser, localConfig.resources)
 })
 
@@ -53,8 +54,9 @@ app.get('/php-test-technique/episodes', (req, res) => {
     const tokenReceived = req.get("X-Auth-Token")
     const correctToken = localConfig.resources.api.headers[0].value
     
-    if (!dataChecker.isTokenValid(tokenReceived, correctToken))
-    return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
+    if (!dataChecker.isTokenValid(tokenReceived, correctToken)) {
+        return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
+    }
     return apiResponseManager.returnAPIWithBody(res, 200, messageManager.getShortSuccessMessage(), fileAccess.readJsonFileSync('blackmirror.json'))
     
 })
