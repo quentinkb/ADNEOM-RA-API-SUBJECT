@@ -1,127 +1,76 @@
 const express = require('express')
 const app = express()
-const fs = require("fs")
+
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000
-const { Client } = require('pg');
 
-var ip = require("ip");
+const DataChecker = require('./DataChecker');
+const dataChecker = new DataChecker()
+
+const MessageManager = require('./MessageManager')
+const messageManager = new MessageManager()
+
+const APIResponseManager = require('./APIResponseManager')
+const apiResponseManager = new APIResponseManager()
+
+const FileAccess = require('./FileAccess')
+const fileAccess = new FileAccess()
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-
-/**
- * récupération du token
- * @table access
- * chaque appel à la route produit une insertion en base
- * database : herokuPostGre
- */
-app.post('/', function(req, res) {
-  var date = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-  var SQLRequest = "INSERT INTO access (id_user, last_name, first_name, access_time, success, code, message, ip_address) VALUES (";
-  var tokenReceived = req.get("X-Auth-Token");
-  var localConfig = readJsonFileSync('parameters.json');
-  var authValue = localTokenAuth(tokenReceived, localConfig.XAuthToken);
-  var retData ;
-  var retCode ;
-  if (!authValue) {
-    retCode = 403;
-    retData = {
-      "code":retCode,
-      "message":"Votre token n'est pas valide ou est mal renseigné"
-    };
-    SQLRequest += "-1, null, null, '"+date+"', 0, '403', 'wrong_token', '"+ ip.address() +"');";
-  } else {
-    var idReceived = parseInt(req.body.Id);
-    if (idReceived === undefined || idReceived === "undefined" || idReceived === null || isNaN(idReceived)) {
-      retCode = 400;
-      retData = {
-        "code":retCode,
-        "message":"Un ou plusieurs paramètres sont manquants ou malformés"
-      };
-      SQLRequest += "-1, null, null, '"+date+"', 0, '400', 'missing_parameters', '"+ ip.address() +"');";
-    } else {
-      var localUsers = readJsonFileSync('users.json');
-      if (localUsers === 'undefined' || localUsers === undefined || localUsers === null || localUsers.users === 'undefined' || localUsers.users === undefined || localUsers.users === null ||(localUsers.users.length == 0)) {
-        retCode = 500 ;
-        retData = {
-          "code":retCode,
-          "message":"[Erreur technique] - la base de données utilisateurs n'est pas joignable"
-        }
-        SQLRequest += "-1, null, null, '"+date+"', 0, '500', 'internal_error', '"+ ip.address() +"');";
-      } else {
-        localUsers = localUsers.users;
-        var currentUser = null;
-        localUsers.forEach( function (user) {
-          if (user.id === idReceived) {
-            currentUser = user;
-          }
-        });
-        if (currentUser === null) {
-          retCode = 404;
-          retData = {
-            "code":retCode,
-            "message": "[Utilisateurs manquant] - vous n'êtes pas encore réferencé dans nos bases."
-          };
-          SQLRequest += "-1, null, null, '"+date+"', 0, '404', 'user_not_found', '"+ ip.address() +"');";
-        } else {
-          retCode = 200;
-          retData = {
-            "code":retCode,
-            "message":"Bravo, voici les informations nécessaires pour la suite du test.",
-            "user":currentUser,
-            "resources": localConfig.resources
-          };
-          SQLRequest += currentUser.id+", '" + currentUser.lastName + "', '" + currentUser.firstName + "', '"+date+"', 1, '200', 'success', '"+ ip.address() +"');";
-        }
-      }
-    }
-  }
-
-  res.status(retCode).send(retData);
-});
-
-app.get('/blackmirror', function (req, res) {
-  var tokenReceived = req.get("X-Auth-Token");
-  var localConfig = readJsonFileSync('parameters.json');
-  var authValue = localTokenAuth(tokenReceived, localConfig.resources.api.headers[0].value);
-  var retCode;
-  var retData;
-  if (!authValue) {
-    retCode = 403;
-    retData = {
-      "code":retCode,
-      "message":"Votre token n'est pas valide ou est mal renseigné"
-    };
-  } else {
-    retCode = 200;
-    retData = {
-      "code":retCode,
-      "message":"Success",
-      "resources":readJsonFileSync('blackmirror.json')
-    };
-  }
-  res.status(retCode).send(retData);
-});
 
 app.listen(PORT, function () {
   console.log('API RA API SUBJECT listening on port ' + PORT)
 });
 
-function localTokenAuth(pToken, lToken) {
-  if (pToken === undefined || pToken === 'undefined' || pToken === null) {
-    return false;
-  } else {
-    var localAuthToken = lToken;
-    return localAuthToken === pToken;
-  }
-}
 
-function readJsonFileSync(filepath, encoding)
-{
-    if (typeof (encoding) == 'undefined'){
-        encoding = 'utf8';
-    }
-    var file = fs.readFileSync(filepath, encoding);
-    return JSON.parse(file);
-}
+app.get('/php-test-technique/subject', (req, res) => {
+  
+  const tokenReceived = req.get("X-Auth-Token")
+  const localConfig = fileAccess.readJsonFileSync('parameters.json')
+
+  if (!dataChecker.isTokenValid(tokenReceived, localConfig.XAuthToken))
+    return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
+
+  const idReceivedFromRequest = parseInt(req.body.Id)
+  if (dataChecker.idIsIncorrect(idReceivedFromRequest))
+    return apiResponseManager.returnAPI(res, 400, messageManager.getMissignParamsMessage())
+  
+  let localUsers = fileAccess.readJsonFileSync('users.json')
+  if (dataChecker.userDataBaseUnreachable(localUsers))
+    return apiResponseManager.returnAPI(res, 500, messageManager.getTechnicalErrorMessage())
+  
+  const currentUser = dataChecker.findUser(localUsers.users, idReceivedFromRequest);
+  if (dataChecker.userNotFound(currentUser))
+    return apiResponseManager.returnAPI(res, 404, messageManager.getMissignUserMessage())
+  
+  return apiResponseManager.returnAPIWithBodyAndUser(res, 200, messageManager.getSuccessMessage() , currentUser, localConfig.resources)
+})
+
+app.get('/php-test-technique/episodes', (req, res) => {
+
+  const localConfig = fileAccess.readJsonFileSync('parameters.json')
+  const tokenReceived = req.get("X-Auth-Token")
+  const correctToken = localConfig.resources.api.headers[0].value
+
+  if (!dataChecker.isTokenValid(tokenReceived, correctToken))
+    return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
+  return apiResponseManager.returnAPIWithBody(res, 200, messageManager.getShortSuccessMessage(), fileAccess.readJsonFileSync('blackmirror.json'))
+
+})
+
+app.get('/php-test-technique/episodes/:episodeId', (req, res) => {
+
+  const localConfig = fileAccess.readJsonFileSync('parameters.json')
+  const episodeIdReceived = req.params.episodeId
+  const tokenReceived = req.get("X-Auth-Token")
+  const correctToken = localConfig.resources.api.headers[0].value
+
+  if (!dataChecker.isTokenValid(tokenReceived, correctToken))
+    return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
+  if (dataChecker.idIsIncorrect(episodeIdReceived)) 
+    return apiResponseManager.returnAPI(res, 400, messageManager.getMissignParamsMessage())
+  const episode = fileAccess.getSpecificEpisodeFromJSON('blackmirror.json', 'utf8', episodeIdReceived)
+  if (episode == null) return apiResponseManager.returnAPI(res, 404, messageManager.getWrongEpisodeId())
+    return apiResponseManager.returnAPIWithBody(res, 200, messageManager.getShortSuccessMessage(), episode)
+})

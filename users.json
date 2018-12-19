@@ -77,6 +77,11 @@
       "firstName":"Pawel",
       "lastName": "Szymanski",
       "id":928
+    },
+    {
+      "firstName": "Bastien",
+      "lastName": "Beaurain",
+      "id": 369
     }
   ]
 }

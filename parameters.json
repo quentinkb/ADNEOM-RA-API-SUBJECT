@@ -5,16 +5,30 @@
       "url":"https://quentinkb.github.io"
     },
     "api" : {
-      "url":"http://adneomapisubject.herokuapp.com",
-      "path":"/blackmirror",
-      "headers": [
+      "accessors": [
         {
-          "key":"X-Auth-Token",
-          "value":"TokenADNTest2018"
+          "url":"www.adneom-ra.com/php-test-technique/",
+          "path":"/episodes",
+          "headers": [
+            {
+              "key":"X-Auth-Token",
+              "value":"TokenADNTest2018"
+            }
+          ],
+          "method":"GET"
+        },
+        {
+          "url":"www.adneom-ra.com/php-test-technique/",
+          "path":"/episodes/:id",
+          "headers": [
+            {
+              "key":"X-Auth-Token",
+              "value":"TokenADNTest2018"
+            }
+          ],
+          "method":"GET"
         }
-      ],
-      "method":"GET"
-
+      ]
     }
   }
 }
