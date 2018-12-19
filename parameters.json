@@ -7,7 +7,7 @@
     "api" : {
       "accessors": [
         {
-          "url":"www.adneom-ra.com/php-test-technique/",
+          "url":"https://adneomapisubject.herokuapp.com/php-test-technique",
           "path":"/episodes",
           "headers": [
             {
@@ -18,7 +18,7 @@
           "method":"GET"
         },
         {
-          "url":"www.adneom-ra.com/php-test-technique/",
+          "url":"https://adneomapisubject.herokuapp.com/php-test-technique",
           "path":"/episodes/:id",
           "headers": [
             {

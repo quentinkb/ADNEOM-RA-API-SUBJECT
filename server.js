@@ -29,22 +29,21 @@ app.get('/php-test-technique/subject', (req, res) => {
     const tokenReceived = req.get("X-Auth-Token")
     const localConfig = fileAccess.readJsonFileSync('parameters.json')
     
-    if (!dataChecker.isTokenValid(tokenReceived, localConfig.XAuthToken)) {
+    if (!dataChecker.isTokenValid(tokenReceived, localConfig.XAuthToken))
         return apiResponseManager.returnAPI(res, 403, messageManager.getWrongTokenMessage())
-    }    
+    
     const idReceivedFromRequest = parseInt(req.body.Id)
-    if (dataChecker.idIsIncorrect(idReceivedFromRequest)) {
+    if (dataChecker.idIsIncorrect(idReceivedFromRequest))
         return apiResponseManager.returnAPI(res, 400, messageManager.getMissignParamsMessage())
-    }
     
     let localUsers = fileAccess.readJsonFileSync('users.json')
-    if (dataChecker.userDataBaseUnreachable(localUsers)) {
+    if (dataChecker.userDataBaseUnreachable(localUsers))
         return apiResponseManager.returnAPI(res, 500, messageManager.getTechnicalErrorMessage())
-    }    
+    
     const currentUser = dataChecker.findUser(localUsers.users, idReceivedFromRequest);
-    if (dataChecker.userNotFound(currentUser)) {
+    if (dataChecker.userNotFound(currentUser))
         return apiResponseManager.returnAPI(res, 404, messageManager.getMissignUserMessage())
-    }    
+    
     return apiResponseManager.returnAPIWithBodyAndUser(res, 200, messageManager.getSuccessMessage() , currentUser, localConfig.resources)
 })
 
